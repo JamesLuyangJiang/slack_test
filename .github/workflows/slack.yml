@@ -11,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Send Slack Notification On Push
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
       run: |
-        MESSAGE="Hello from GitHub Actions!"
+        MESSAGE="${{github.event.sender.login}} has just made a new push to ${{github.repository}}. Reference #: ${{github.event.ref}}."
         SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
         curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
