@@ -4,6 +4,7 @@ on:
   pull_request:
     types:
       - opened
+      - closed
   push:
     branches:
       - main
@@ -25,7 +26,7 @@ jobs:
           MESSAGE="New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
           MESSAGE="$MESSAGE\nSource Branch: $SOURCE_BRANCH\nTarget Branch: $TARGET_BRANCH"
           SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
-          curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data '$SLACK_MESSAGE' $SLACK_WEBHOOK_URL
   
   slack_pr_merged:
     runs-on: ubuntu-latest
@@ -67,4 +68,4 @@ jobs:
 
     - name: Send Slack Notification On Push
       run: |
-        curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
+        curl -X POST -H 'Content-type: application/json' --data '$SLACK_MESSAGE' $SLACK_WEBHOOK_URL
