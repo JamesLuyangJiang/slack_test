@@ -26,7 +26,7 @@ jobs:
           MESSAGE="New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
           MESSAGE="$MESSAGE\nSource Branch: $SOURCE_BRANCH\nTarget Branch: $TARGET_BRANCH"
           SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
-          curl -X POST -H 'Content-type: application/json' --data '$SLACK_MESSAGE' $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
   
   slack_pr_merged:
     runs-on: ubuntu-latest
@@ -61,9 +61,9 @@ jobs:
         REPOSITORY_NAME="${{ github.repository }}"
         TARGET_BRANCH="${{ github.ref }}"
         COMMIT_SHA="${{ github.sha }}"
-        SHORT_COMMIT_SHA="{$COMMIT_SHA::7}"
+        SHORT_COMMIT_SHA="${COMMIT_SHA::7}"
         
-        MESSAGE="$PUSH_AUTHOR has just made a new push to $REPOSITORY_NAME, in $TARGET_BRANCH, and the commit sha is $SHORT_COMMIT_SHA."
+        MESSAGE="$PUSH_AUTHOR has just made a new push to repository: $REPOSITORY_NAME, in branch name: $TARGET_BRANCH, and the commit sha is $SHORT_COMMIT_SHA."
         SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
 
         curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
