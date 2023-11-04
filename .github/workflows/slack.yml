@@ -51,7 +51,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Send Slack Notification On Push
+    - name: Collect Data On Push
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
       if: ${{ github.event_name == 'push' }}
@@ -65,6 +65,6 @@ jobs:
         MESSAGE="$PUSH_AUTHOR has just made a new push to $REPOSITORY_NAME, in $TARGET_BRANCH, and the commit sha is $SHORT_COMMIT_SHA."
         SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
 
-    - name: Send Slack Notification
+    - name: Send Slack Notification On Push
       run: |
-        curl -X POST -H 'Content-type: application/json' --data @slack_message.json $SLACK_WEBHOOK_URL
+        curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
