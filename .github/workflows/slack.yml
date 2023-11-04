@@ -1,12 +1,30 @@
-name: Slack Notification
+name: Slack Notifications for push and new PR
 
 on:
+  pull_request:
+    types:
+      - opened
   push:
     branches:
       - main
 
 jobs:
-  slack:
+  slack_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Send Slack Notification for Pull Request
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
+          }' $SLACK_WEBHOOK_URL
+
+  slack_push:
     runs-on: ubuntu-latest
 
     steps:
