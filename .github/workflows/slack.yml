@@ -13,15 +13,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Send Slack Notification for Pull Request
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
         run: |
+          SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
+          TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
+          MESSAGE="New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
+          MESSAGE="$MESSAGE\nSource Branch: $SOURCE_BRANCH\nTarget Branch: $TARGET_BRANCH"
+          SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
+          curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
+  
+  slack_pr_merged:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Send Slack Notification for Merged Pull Request
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
+          TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
+            "text": "Pull request merged from $SOURCE_BRANCH into $TARGET_BRANCH: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
           }' $SLACK_WEBHOOK_URL
 
   slack_push:
@@ -34,8 +54,17 @@ jobs:
     - name: Send Slack Notification On Push
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      if: ${{ github.event_name == 'push' }}
       run: |
-        MESSAGE="${{github.event.sender.login}} has just made a new push to ${{github.repository}}. Reference #: ${{github.event.after}}.
-                  Commit sha: ${{github.sha}}. More details: ${{github.event.commits}}"
+        PUSH_AUTHOR="${{ github.event.sender.login }}"
+        REPOSITORY_NAME="${{ github.repository }}"
+        TARGET_BRANCH="${{ github.ref }}"
+        COMMIT_SHA="${{ github.sha }}"
+        SHORT_COMMIT_SHA="${COMMIT_SHA::7}"
+        
+        MESSAGE="$PUSH_AUTHOR has just made a new push to $REPOSITORY_NAME, in $TARGET_BRANCH, and the commit sha is $SHORT_COMMIT_SHA."
         SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
-        curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
+
+    - name: Send Slack Notification
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data @slack_message.json $SLACK_WEBHOOK_URL
