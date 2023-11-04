@@ -42,7 +42,7 @@ jobs:
           SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "Pull request merged from $SOURCE_BRANCH into $TARGET_BRANCH: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
+            "text": "Pull request merged from "$SOURCE_BRANCH" into "$TARGET_BRANCH": ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
           }' $SLACK_WEBHOOK_URL
 
   slack_push:
