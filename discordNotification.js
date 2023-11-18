@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits } = require('discord.js');
+const { execSync } = require('child_process');
 
 const discordToken = process.env.DISCORD_TOKEN;
 const discordChannelId = '1175239195749535786';
