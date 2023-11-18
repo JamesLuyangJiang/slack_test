@@ -1,9 +1,9 @@
-const { Client } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 
 const discordToken = process.env.DISCORD_TOKEN;
-const discordChannelId = 'YOUR_DISCORD_CHANNEL_ID';
+const discordChannelId = '1175239195749535786';
 
-const client = new Client();
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.login(discordToken);
 
 client.on('ready', () => {
