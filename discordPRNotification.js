@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const { Octokit } = require('@octokit/rest');
+const { GitHub, context } = require('@actions/github');
 
-const octokit = new Octokit();
+const octokit = new GitHub();
 const discordToken = process.env.DISCORD_TOKEN;
 const discordChannelId = '1175239195749535786';
 
