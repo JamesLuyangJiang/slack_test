@@ -14,7 +14,7 @@ client.on('ready', () => {
     const repositoryName = process.env.GITHUB_REPOSITORY;
     const pusherName = process.env.GITHUB_ACTOR;
 
-    const message = `${pusherName} has just pushed to the repository ${repositoryName} in branch ${branchName}, commit hash: ${commitHash}`;
+    const message = `${pusherName} has just pushed to the repository ${repositoryName}, in branch ${branchName}, commit SHA: ${commitHash}`;
     channel.send(message);
   }
 

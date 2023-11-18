@@ -63,7 +63,7 @@ jobs:
           COMMIT_SHA="${{ github.sha }}"
           SHORT_COMMIT_SHA="${COMMIT_SHA::7}"
           
-          MESSAGE="$PUSH_AUTHOR has just made a new push to repository: $REPOSITORY_NAME, in branch name: $TARGET_BRANCH, and the commit sha is $SHORT_COMMIT_SHA."
+          MESSAGE="$PUSH_AUTHOR has just made a new push to repository: $REPOSITORY_NAME, in branch name: $TARGET_BRANCH, and the commit SHA is $SHORT_COMMIT_SHA."
           SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
 
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
@@ -78,7 +78,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Install Dependencies
         run: npm install discord.js
