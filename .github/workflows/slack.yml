@@ -10,7 +10,7 @@ on:
       - '*'
 
 jobs:
-  slack_pr:
+  slack_pr_open:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,7 +28,7 @@ jobs:
           SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
   
-  slack_pr_merged:
+  slack_pr_closed:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,21 +49,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Collect Data On Push
-      if: ${{ github.event_name == 'push' }}
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-      run: |
-        PUSH_AUTHOR="${{ github.event.sender.login }}"
-        REPOSITORY_NAME="${{ github.repository }}"
-        TARGET_BRANCH="${{ github.ref }}"
-        COMMIT_SHA="${{ github.sha }}"
-        SHORT_COMMIT_SHA="${COMMIT_SHA::7}"
-        
-        MESSAGE="$PUSH_AUTHOR has just made a new push to repository: $REPOSITORY_NAME, in branch name: $TARGET_BRANCH, and the commit sha is $SHORT_COMMIT_SHA."
-        SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
+      - name: Collect Data On Push
+        if: ${{ github.event_name == 'push' }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          PUSH_AUTHOR="${{ github.event.sender.login }}"
+          REPOSITORY_NAME="${{ github.repository }}"
+          TARGET_BRANCH="${{ github.ref }}"
+          COMMIT_SHA="${{ github.sha }}"
+          SHORT_COMMIT_SHA="${COMMIT_SHA::7}"
+          
+          MESSAGE="$PUSH_AUTHOR has just made a new push to repository: $REPOSITORY_NAME, in branch name: $TARGET_BRANCH, and the commit SHA is $SHORT_COMMIT_SHA."
+          SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
 
-        curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
+
+  discord_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16  
+
+      - name: Install Dependencies
+        run: npm install discord.js
+
+      - name: Send Notification to Discord
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        run: node discordPushNotification.js
+
+  discord_pr_open:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+
+      - name: Install Dependencies
+        run: npm install discord.js
+
+      - name: Send PR Notification to Discord
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        run: node discordPRNotification.js
