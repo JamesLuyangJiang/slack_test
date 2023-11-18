@@ -23,7 +23,7 @@ jobs:
         run: |
           SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
-          MENTION_USER="@James Jiang"
+          MENTION_USER="@U0613UG13D0"
           MESSAGE="$MENTION_USER New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
           MESSAGE="$MESSAGE\nSource Branch: $SOURCE_BRANCH\nTarget Branch: $TARGET_BRANCH"
           SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
