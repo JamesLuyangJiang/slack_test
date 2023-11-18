@@ -23,7 +23,8 @@ jobs:
         run: |
           SOURCE_BRANCH="${{ github.event.pull_request.head.ref }}"
           TARGET_BRANCH="${{ github.event.pull_request.base.ref }}"
-          MESSAGE="New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
+          MENTION_USER="@James Jiang"
+          MESSAGE="$MENTION_USER New pull request submitted: ${{ github.event.pull_request.html_url }} by ${{ github.event.pull_request.user.login }}"
           MESSAGE="$MESSAGE\nSource Branch: $SOURCE_BRANCH\nTarget Branch: $TARGET_BRANCH"
           SLACK_MESSAGE="{\"text\":\"$MESSAGE\"}"
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_MESSAGE" $SLACK_WEBHOOK_URL
