@@ -103,6 +103,7 @@ jobs:
 
       - name: Install Dependencies
         run: npm install discord.js
+            npm install @actions/github
 
       - name: Send PR Notification to Discord
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
