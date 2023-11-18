@@ -84,6 +84,7 @@ jobs:
         run: npm install discord.js
 
       - name: Send Notification to Discord
+        if: ${{ github.event_name == 'push' }}
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: node discordPushNotification.js
@@ -104,6 +105,7 @@ jobs:
         run: npm install discord.js
 
       - name: Send PR Notification to Discord
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: node discordPRNotification.js
