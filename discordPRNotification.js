@@ -1,7 +1,6 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const { GitHub, context } = require('@actions/github');
+const { context } = require('@actions/github');
 
-const octokit = new GitHub();
 const discordToken = process.env.DISCORD_TOKEN;
 const discordChannelId = '1175239195749535786';
 
@@ -10,13 +9,8 @@ client.login(discordToken);
 
 client.on('ready', async () => {
   const channel = client.channels.cache.get(discordChannelId);
-  if (channel) {
-    const prNumber = process.env.GITHUB_EVENT_NUMBER;
-    const { data: pullRequest } = await octokit.pulls.get({
-      owner: process.env.GITHUB_REPOSITORY_OWNER,
-      repo: process.env.GITHUB_REPOSITORY,
-      pull_number: prNumber,
-    });
+  if (channel && context.payload.pull_request) {
+    const pullRequest = context.payload.pull_request;
 
     const prUrl = pullRequest.html_url;
     const prTitle = pullRequest.title;
