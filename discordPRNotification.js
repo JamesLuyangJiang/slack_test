@@ -4,6 +4,8 @@ const { context } = require('@actions/github');
 const discordToken = process.env.DISCORD_TOKEN;
 const discordChannelId = '1175239195749535786';
 
+const userIdToMention = '753009249780498523';
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.login(discordToken);
 
@@ -18,7 +20,9 @@ client.on('ready', async () => {
     const sourceBranch = pullRequest.head.ref;
     const targetBranch = pullRequest.base.ref;
 
-    const message = `New pull request submitted: ${prUrl} by ${prUser}. Source branch: ${sourceBranch}, target branch: ${targetBranch}`;
+    const mentionedUser = `<@${userIdToMention}>`;
+
+    const message = `${mentionedUser} New pull request submitted: ${prUrl} by ${prUser}. Source branch: ${sourceBranch}, target branch: ${targetBranch}`;
     channel.send(message);
   }
 
