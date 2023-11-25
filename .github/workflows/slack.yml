@@ -90,7 +90,7 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: node discordPushNotification.js
 
-  discord_pr_open:
+  discord_pr:
     runs-on: ubuntu-latest
 
     steps:
@@ -107,7 +107,7 @@ jobs:
             npm install @actions/github
 
       - name: Send PR Notification to Discord
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
+        if: ${{ github.event_name == 'pull_request'}}
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: node discordPRNotification.js
