@@ -6,6 +6,9 @@ const discordChannelId = '1175239195749535786';
 
 const userIdToMention = '753009249780498523';
 
+const isPRClosed = context.payload.action === 'closed';
+const closeUser = isPRClosed ? context.payload.pull_request.closed_by.login : '';
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.login(discordToken);
 
@@ -22,7 +25,12 @@ client.on('ready', async () => {
 
     const mentionedUser = `<@${userIdToMention}>`;
 
-    const message = `${mentionedUser} New pull request submitted: ${prUrl} by ${prUser}. Source branch: ${sourceBranch}, target branch: ${targetBranch}`;
+    let message = ''
+    if (isPRClosed) {
+      message = `Pull request closed by ${closeUser}: ${prUrl}. Source branch: ${sourceBranch}, target branch: ${targetBranch}`;
+    } else {
+      message = `${mentionedUser} New pull request submitted: ${prUrl} by ${prUser}. Source branch: ${sourceBranch}, target branch: ${targetBranch}`;
+    }
     channel.send(message);
   }
 
