@@ -79,7 +79,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 16  
+          node-version: 16
 
       - name: Install Dependencies
         run: npm install discord.js
@@ -90,7 +90,7 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: node discordPushNotification.js
 
-  discord_pr:
+  discord_pr_open:
     runs-on: ubuntu-latest
 
     steps:
@@ -107,7 +107,7 @@ jobs:
             npm install @actions/github
 
       - name: Send PR Notification to Discord
-        if: ${{ github.event_name == 'pull_request'}}
+        if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'closed') }}
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: node discordPRNotification.js
