@@ -1,2 +1,2 @@
 # slack_test
-pr_close_test_2
+pr_close_test_3
