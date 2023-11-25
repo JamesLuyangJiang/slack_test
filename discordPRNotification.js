@@ -7,7 +7,7 @@ const discordChannelId = '1175239195749535786';
 const userIdToMention = '753009249780498523';
 
 const isPRClosed = context.payload.action === 'closed';
-const closeUser = isPRClosed ? context.payload.pull_request.closed_by.login : '';
+const closeUser = isPRClosed ? context.payload.sender.login : '';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.login(discordToken);

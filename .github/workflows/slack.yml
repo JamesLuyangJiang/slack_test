@@ -90,7 +90,7 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: node discordPushNotification.js
 
-  discord_pr_open:
+  discord_pr:
     runs-on: ubuntu-latest
 
     steps:
